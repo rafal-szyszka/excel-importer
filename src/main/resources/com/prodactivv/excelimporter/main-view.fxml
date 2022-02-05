@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.prodactivv.excelimporter.MainViewController">
+   <children>
+      <VBox alignment="TOP_CENTER" prefHeight="380.0" prefWidth="450.0" spacing="5.0">
+         <children>
+            <Label text="Obserwowane katalogi:">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Label>
+            <VBox fx:id="monitoredCatalogs" prefHeight="251.0" prefWidth="390.0" spacing="10.0" style="-fx-border-width: 1; -fx-border-color: cfcfcf; -fx-padding: 5;">
+               <children>
+                  <Label text="Aktualnie nie obserwujesz żadnego katalogu" />
+               </children></VBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="Dodaj katalog">
+                     <HBox.margin>
+                        <Insets right="15.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Button fx:id="addNewMonitoredCatalog" mnemonicParsing="false" onAction="#chooseCatalogToMonitor" text="Przeglądaj ...">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin></Button>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="25.0" right="25.0" top="25.0" />
+         </padding></VBox>
+      <Separator orientation="VERTICAL" prefHeight="200.0" />
+      <VBox prefHeight="380.0" prefWidth="525.0" spacing="5.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="25.0" spacing="15.0">
+               <children>
+                  <Label text="Importuj plik">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Label>
+                  <Button mnemonicParsing="false" onAction="#importSingleFile" text="Przeglądaj ..." />
+                  <ProgressBar fx:id="singleFileProgress" prefHeight="18.0" prefWidth="325.0" progress="0.0" />
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+            <Separator prefWidth="200.0" />
+            <Label text="Informacje programu" />
+            <TextArea fx:id="messageArea" prefHeight="275.0" prefWidth="495.0" wrapText="true" />
+            <HBox prefHeight="25.0" prefWidth="500.0">
+               <children>
+                  <HBox prefWidth="250.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#deleteLogs" text="Usuń logi" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" prefWidth="250.0" spacing="50.0">
+                     <children>
+                        <Label fx:id="loggedInAs" />
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="15.0" right="5.0" top="5.0" />
+         </padding></VBox>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</HBox>
