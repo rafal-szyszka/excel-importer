@@ -9,6 +9,7 @@ module com.prodactivv.excelimporter {
     requires unirest.java;
     requires org.jsoup;
     requires org.json;
+    requires commons.cli;
 
     opens com.prodactivv.excelimporter to javafx.fxml;
     opens com.prodactivv.excelimporter.watcher.excel to com.fasterxml.jackson.databind;

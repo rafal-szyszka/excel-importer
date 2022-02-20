@@ -1,7 +1,7 @@
 package com.prodactivv.excelimporter.watcher.excel;
 
-import com.prodactivv.excelimporter.MessageAreaHandler;
 import com.prodactivv.excelimporter.Credentials;
+import com.prodactivv.excelimporter.IMessageAreaHandler;
 import com.prodactivv.excelimporter.watcher.DeletedFileListener;
 import com.prodactivv.excelimporter.watcher.DirectoryWatcherTask;
 import com.prodactivv.excelimporter.watcher.ModifiedFileListener;
@@ -18,10 +18,10 @@ import java.util.UUID;
 public class ExcelImporterService {
 
     private final ObservableMap<UUID, TraceableWatcherTaskThread> runningThreads;
-    private final MessageAreaHandler messageAreaHandler;
+    private final IMessageAreaHandler messageAreaHandler;
     private Credentials credentials;
 
-    public ExcelImporterService(ObservableMap<UUID, TraceableWatcherTaskThread> runningThreads, MessageAreaHandler messageAreaHandler, Credentials credentials) {
+    public ExcelImporterService(ObservableMap<UUID, TraceableWatcherTaskThread> runningThreads, IMessageAreaHandler messageAreaHandler, Credentials credentials) {
         this.runningThreads = runningThreads;
         this.messageAreaHandler = messageAreaHandler;
         this.credentials = credentials;

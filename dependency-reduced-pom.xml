@@ -42,7 +42,7 @@
           <execution>
             <id>default-cli</id>
             <configuration>
-              <mainClass>com.prodactivv.excelimporter/com.prodactivv.excelimporter.HelloApplication</mainClass>
+              <mainClass>com.prodactivv.excelimporter/com.prodactivv.excelimporter.GuiApp</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>

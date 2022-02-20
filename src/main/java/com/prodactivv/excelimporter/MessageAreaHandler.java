@@ -5,7 +5,7 @@ import javafx.scene.control.TextArea;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class MessageAreaHandler {
+public class MessageAreaHandler implements IMessageAreaHandler {
 
     private final TextArea textArea;
 
@@ -13,6 +13,7 @@ public class MessageAreaHandler {
         this.textArea = textArea;
     }
 
+    @Override
     public void showNewDirectoryInfo(String name) {
         addMessage(
                 String.format("%s %s",
@@ -22,6 +23,7 @@ public class MessageAreaHandler {
         );
     }
 
+    @Override
     public void showDeletedDirectoryInfo(String directory) {
         addMessage(
                 String.format("%s %s",
@@ -31,6 +33,7 @@ public class MessageAreaHandler {
         );
     }
 
+    @Override
     public void addMessage(String message) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
@@ -43,6 +46,7 @@ public class MessageAreaHandler {
         );
     }
 
+    @Override
     public void updateMessage(String message, String constMessage) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();

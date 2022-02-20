@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class HelloApplication extends Application {
+public class GuiApp extends Application {
 
     private MainViewController controller;
 
@@ -20,7 +20,7 @@ public class HelloApplication extends Application {
     }
 
     private void showApp(Stage stage, Credentials credentials) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("main-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(GuiApp.class.getResource("main-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1000, 400);
         stage.setTitle("Bpower2 - Import!");
         stage.setScene(scene);
@@ -46,7 +46,7 @@ public class HelloApplication extends Application {
     }
 
     private Credentials showLoginAndWaitForCredentials() throws IOException {
-        FXMLLoader loginLoader = new FXMLLoader(HelloApplication.class.getResource("login-popup.fxml"));
+        FXMLLoader loginLoader = new FXMLLoader(GuiApp.class.getResource("login-popup.fxml"));
         Scene loginScene = new Scene(loginLoader.load(), 300, 220);
         Stage loginStage = new Stage();
         loginStage.initModality(Modality.APPLICATION_MODAL);
