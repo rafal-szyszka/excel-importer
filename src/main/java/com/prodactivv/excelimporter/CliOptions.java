@@ -80,7 +80,8 @@ public class CliOptions {
         return Option.builder(DIRS)
                 .longOpt(DIRS_LONG)
                 .hasArgs()
-                .desc("Provide names or paths to directories to observe. Use , (comma) as separator. Avoid using whitespaces in paths.")
+                .desc("Provide names or paths to directories to observe. Use , (comma) as separator. " +
+                        "Avoid using whitespaces in paths. If you cannot avoid this, wrap path with \" \" (quotes).")
                 .required(required)
                 .build();
     }
