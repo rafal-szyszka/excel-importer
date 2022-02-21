@@ -1,6 +1,7 @@
 package com.prodactivv.excelimporter.watcher;
 
 import com.prodactivv.excelimporter.Credentials;
+import com.prodactivv.excelimporter.IMessageAreaHandler;
 import com.prodactivv.excelimporter.MessageAreaHandler;
 import com.prodactivv.excelimporter.api.ApiClient;
 import com.prodactivv.excelimporter.api.SaveFormResult;
@@ -18,13 +19,13 @@ import java.util.stream.Collectors;
 
 public class NewFileListener implements INewEntryInDirectoryListener {
 
-    private final MessageAreaHandler messageAreaHandler;
+    private final IMessageAreaHandler messageAreaHandler;
     private final String dirPath;
 
     private final ExcelFileProcessor fileProcessor;
     private final Credentials credentials;
 
-    public NewFileListener(MessageAreaHandler messageAreaHandler, String dirPath, ExcelFileProcessor fileProcessor, Credentials credentials) {
+    public NewFileListener(IMessageAreaHandler messageAreaHandler, String dirPath, ExcelFileProcessor fileProcessor, Credentials credentials) {
         this.messageAreaHandler = messageAreaHandler;
         this.dirPath = dirPath;
         this.fileProcessor = fileProcessor;
