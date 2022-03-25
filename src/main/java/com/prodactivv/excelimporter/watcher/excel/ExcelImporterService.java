@@ -19,7 +19,7 @@ public class ExcelImporterService {
 
     private final ObservableMap<UUID, TraceableWatcherTaskThread> runningThreads;
     private final IMessageAreaHandler messageAreaHandler;
-    private Credentials credentials;
+    private final Credentials credentials;
 
     public ExcelImporterService(ObservableMap<UUID, TraceableWatcherTaskThread> runningThreads, IMessageAreaHandler messageAreaHandler, Credentials credentials) {
         this.runningThreads = runningThreads;
@@ -43,16 +43,16 @@ public class ExcelImporterService {
     }
 
     public void runSingleFile(File file) {
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() {
+//        Task<Void> task = new Task<>() {
+//            @Override
+//            protected Void call() {
                 (new NewFileListener(messageAreaHandler, file.getParentFile().getAbsolutePath(), new ExcelFileProcessor(), credentials))
                         .runForPath(file.toPath().getFileName());
-                return null;
-            }
-        };
-
-        (new Thread(task)).start();
+//                return null;
+//            }
+//        };
+//
+//        (new Thread(task)).start();
     }
 
     public void killAllWatchers() {

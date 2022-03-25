@@ -16,7 +16,7 @@ import java.util.Optional;
 public class ApiClient {
 
     private static final String LOGIN_ENDPOINT = "/index.php/restApi/generateJWT";
-    private static final String SAVE_FORM_ENDPOINT = "/index.php/restApi/forms/method/saveForm";
+    private static final String SAVE_FORM_ENDPOINT = "/index.php/restApi/forms/method/saveForm/debug/1/groupIndex";
 
     public static Optional<String> getLoginToken(String server, String login, String password) {
 
@@ -37,9 +37,10 @@ public class ApiClient {
         }
     }
 
-    public static SaveFormResult saveForm(Credentials credentials, String saveFormBody) {
+    public static SaveFormResult saveForm(Credentials credentials, String saveFormBody, String index) {
         try {
-            JsonNode response = Unirest.post(String.format("%s/%s", credentials.server(), SAVE_FORM_ENDPOINT))
+
+            JsonNode response = Unirest.post(String.format("%s/%s/%s", credentials.server(), SAVE_FORM_ENDPOINT, index))
                     .header("Authorization", credentials.key())
                     .body(saveFormBody)
                     .asJson()
@@ -49,10 +50,13 @@ public class ApiClient {
                     .getJSONObject("saveForm")
                     .getString("error");
 
-            String message = Jsoup.clean(
-                    response.getObject().getJSONObject("saveForm").getString("mess"),
-                    Safelist.none()
-            );
+            String message = "";
+            try {
+                message = Jsoup.clean(
+                        response.getObject().getJSONObject("saveForm").getString("mess"),
+                        Safelist.none()
+                );
+            } catch (Exception ignored) {}
 
             return new SaveFormResult(error, message, response.toString());
         } catch (UnirestException e) {

@@ -1,11 +1,19 @@
 package com.prodactivv.excelimporter;
 
 import com.prodactivv.excelimporter.cli.CliApp;
+import com.prodactivv.excelimporter.cli.CliMessageHandler;
 import com.prodactivv.excelimporter.exceptions.InvalidCredentialsException;
+import com.prodactivv.excelimporter.watcher.excel.ExcelImporterService;
+import javafx.collections.FXCollections;
 import org.apache.commons.cli.*;
 
+import java.io.IOException;
+
 public class App {
+
     public static void main(String[] args) {
+        int exit = -1;
+        ExcelImporterService excelImporterService = null;
         CommandLineParser parser = new DefaultParser();
         try {
             CliOptions cliOptions = new CliOptions();
@@ -14,24 +22,37 @@ public class App {
             ifRequestedShowHelp(cliOptions, line);
 
             if (line.hasOption(CliOptions.WINDOW_LESS)) {
-                runInClMode(args, parser, cliOptions);
+                CliMessageHandler messageAreaHandler = new CliMessageHandler();
+                excelImporterService = new ExcelImporterService(
+                        FXCollections.observableHashMap(), messageAreaHandler, null
+                );
+                runInClMode(args, parser, cliOptions, excelImporterService);
+                System.out.println("Press enter to exit");
+                //noinspection UnusedAssignment
+                exit = System.in.read();
             } else {
                 GuiApp.main(args);
             }
 
-        } catch (ParseException | InvalidCredentialsException e) {
+        } catch (ParseException | InvalidCredentialsException | IOException e) {
             System.err.println(e.getMessage());
+        }
+
+        if (excelImporterService != null) {
+            excelImporterService.killAllWatchers();
         }
     }
 
-    private static void runInClMode(String[] args, CommandLineParser parser, CliOptions cliOptions) throws ParseException, InvalidCredentialsException {
+    private static void runInClMode(String[] args, CommandLineParser parser, CliOptions cliOptions, ExcelImporterService excelImporterService) throws ParseException, InvalidCredentialsException {
         CommandLine line = parser.parse(cliOptions.getRequiredInWindowLessModeOptions(), args);
 
+        String optionalDirsValue = line.getOptionValue(CliOptions.DIRS);
         (new CliApp(
                 line.getOptionValue(CliOptions.SERVER),
                 line.getOptionValue(CliOptions.USER),
                 line.getOptionValue(CliOptions.PASSWORD),
-                line.getOptionValue(CliOptions.FILE)
+                line.getOptionValue(CliOptions.FILE),
+                optionalDirsValue == null ? null : optionalDirsValue.split(",")
         )).run();
     }
 
