@@ -34,6 +34,7 @@ public class NewFileListener implements INewEntryInDirectoryListener {
 
     @Override
     public Status runForPath(Path pathToFile) {
+        messageAreaHandler.setTag(pathToFile.getFileName() + "_log.txt");
         if (ExcelFiles.isExcelFile(pathToFile)) {
             Optional<ExcelConfiguration> configuration = getConfiguration(pathToFile);
             if (configuration.isPresent()) {
@@ -45,7 +46,7 @@ public class NewFileListener implements INewEntryInDirectoryListener {
                             strings -> {
                                 messageAreaHandler.addMessage(String.format("Rows to import: %s", strings.size()));
                                 List<String> errors = strings.stream()
-                                        .map(saveFormJson -> ApiClient.saveForm(credentials, saveFormJson))
+                                        .map(saveFormJson -> ApiClient.saveForm(credentials, saveFormJson, pathToFile.getFileName().toString()))
                                         .peek(result -> messageAreaHandler.addMessage(result.error().equals("") ? result.message() : result.error() + "\n" + result.jsonResponse()))
                                         .map(SaveFormResult::error)
                                         .filter(error -> !error.isEmpty())

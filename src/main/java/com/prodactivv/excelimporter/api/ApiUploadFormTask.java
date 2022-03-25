@@ -17,9 +17,9 @@ public class ApiUploadFormTask extends Task<List<SaveFormResult>> {
     }
 
     @Override
-    protected List<SaveFormResult> call() throws Exception {
+    protected List<SaveFormResult> call() {
         return body.stream()
-                .map(saveFormJson -> ApiClient.saveForm(credentials, saveFormJson))
+                .map(saveFormJson -> ApiClient.saveForm(credentials, saveFormJson, String.valueOf(body.size())))
                 .collect(Collectors.toList());
     }
 }

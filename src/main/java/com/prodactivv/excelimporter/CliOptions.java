@@ -60,22 +60,22 @@ public class CliOptions {
     private OptionGroup fileOrDirOptionGroup(boolean required) {
         OptionGroup optionGroup = new OptionGroup();
         optionGroup.addOption(fileToImportOption(false));
-//        optionGroup.addOption(directoriesToObserveOption(false));
+        optionGroup.addOption(directoriesToObserveOption(false));
         optionGroup.setRequired(required);
         return optionGroup;
     }
 
+    @SuppressWarnings("SameParameterValue")
     private Option fileToImportOption(boolean required) {
         return Option.builder(FILE)
                 .longOpt(FILE_LONG)
                 .hasArg()
-                .desc("Provide name or path to file to import. " +
-                        "Directory observers are not allowed in CLI mode due to inability to recognize when program should exit. " +
-                        "Being unable to properly close application can cause memory leak and unwanted behavior.")
+                .desc("Provide name or path to file to import.")
                 .required(required)
                 .build();
     }
 
+    @SuppressWarnings("SameParameterValue")
     private Option directoriesToObserveOption(boolean required) {
         return Option.builder(DIRS)
                 .longOpt(DIRS_LONG)

@@ -23,7 +23,10 @@ public class DirectoryWatcherTask extends Task<Void> {
         this.modifiedEntryListener = modifiedEntryListener;
     }
 
-    @SuppressWarnings("ConstantConditions")
+    public void forceCall() throws Exception {
+        call();
+    }
+
     @Override
     protected Void call() throws Exception {
         WatchService directoryWatcher = FileSystems.getDefault().newWatchService();
@@ -41,10 +44,14 @@ public class DirectoryWatcherTask extends Task<Void> {
 
                 if (event.kind().name().equals(StandardWatchEventKinds.ENTRY_CREATE.name())) {
                     newFile.ifPresent(file -> {
-                        statusDiode.setFill(Colors.RUNNING);
+                        if (statusDiode != null) {
+                            statusDiode.setFill(Colors.RUNNING);
+                        }
                         IDirectoryListener.Status result = newEntryListener.runForPath(file);
                         if (result != IDirectoryListener.Status.RUNNING) {
-                            statusDiode.setFill(Colors.getStatusColor(result));
+                            if (statusDiode != null) {
+                                statusDiode.setFill(Colors.getStatusColor(result));
+                            }
                         }
                     });
                 } else if (event.kind().name().equals(StandardWatchEventKinds.ENTRY_DELETE.name())) {

@@ -1,13 +1,17 @@
 package com.prodactivv.excelimporter.cli;
 
 import com.prodactivv.excelimporter.Credentials;
-import com.prodactivv.excelimporter.IMessageAreaHandler;
 import com.prodactivv.excelimporter.api.ApiClient;
 import com.prodactivv.excelimporter.exceptions.InvalidCredentialsException;
+import com.prodactivv.excelimporter.watcher.DeletedFileListener;
+import com.prodactivv.excelimporter.watcher.DirectoryWatcherTask;
+import com.prodactivv.excelimporter.watcher.ModifiedFileListener;
 import com.prodactivv.excelimporter.watcher.NewFileListener;
 import com.prodactivv.excelimporter.watcher.excel.ExcelFileProcessor;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CliApp {
 
@@ -15,12 +19,15 @@ public class CliApp {
     private final String user;
     private final String password;
     private final String fileToImport;
+    private final List<String> dirsToMonitor;
 
-    public CliApp(String server, String user, String password, String fileToImport) {
+
+    public CliApp(String server, String user, String password, String fileToImport, String[] dirsToMonitor) {
         this.server = server;
         this.user = user;
         this.password = password;
         this.fileToImport = fileToImport;
+        this.dirsToMonitor = dirsToMonitor == null ? new ArrayList<>() : List.of(dirsToMonitor);
     }
 
     public void run() throws InvalidCredentialsException {
@@ -28,32 +35,34 @@ public class CliApp {
                 .map(token -> new Credentials(server, user, token))
                 .orElseThrow(new InvalidCredentialsException("Invalid credentials!"));
 
-        File file = new File(fileToImport);
-        new NewFileListener(getMessageAreaHandler(), file.getParentFile().getAbsolutePath(), new ExcelFileProcessor(), credentials)
+        if (dirsToMonitor != null) {
+            monitorDirs(credentials);
+        } else {
+            File file = new File(fileToImport);
+            new NewFileListener(new CliMessageHandler(), file.getParentFile().getAbsolutePath(), new ExcelFileProcessor(), credentials)
                 .runForPath(file.toPath().getFileName());
+        }
     }
 
-    private IMessageAreaHandler getMessageAreaHandler() {
-        return new IMessageAreaHandler() {
-            @Override
-            public void showNewDirectoryInfo(String name) {
-                addMessage(name);
-            }
+    private void monitorDirs(Credentials credentials) {
+        dirsToMonitor.stream()
+                .map(File::new)
+                .filter(File::isDirectory)
+                .forEach(
+                        dir -> {
+                            DirectoryWatcherTask watcherTask = new DirectoryWatcherTask(
+                                    dir.toPath(),
+                                    new NewFileListener(new CliMessageHandler(), dir.getAbsolutePath(), new ExcelFileProcessor(), credentials),
+                                    new DeletedFileListener(),
+                                    new ModifiedFileListener()
+                            );
 
-            @Override
-            public void showDeletedDirectoryInfo(String directory) {
-                addMessage(directory);
-            }
-
-            @Override
-            public void addMessage(String message) {
-                System.out.println(message);
-            }
-
-            @Override
-            public void updateMessage(String message, String constMessage) {
-                addMessage(message);
-            }
-        };
+                            try {
+                                watcherTask.forceCall();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                );
     }
 }
