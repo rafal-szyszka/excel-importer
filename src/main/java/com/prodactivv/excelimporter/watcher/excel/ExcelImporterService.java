@@ -43,16 +43,16 @@ public class ExcelImporterService {
     }
 
     public void runSingleFile(File file) {
-//        Task<Void> task = new Task<>() {
-//            @Override
-//            protected Void call() {
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
                 (new NewFileListener(messageAreaHandler, file.getParentFile().getAbsolutePath(), new ExcelFileProcessor(), credentials))
                         .runForPath(file.toPath().getFileName());
-//                return null;
-//            }
-//        };
-//
-//        (new Thread(task)).start();
+                return null;
+            }
+        };
+
+        (new Thread(task)).start();
     }
 
     public void killAllWatchers() {

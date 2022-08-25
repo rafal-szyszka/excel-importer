@@ -6,10 +6,12 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.prodactivv.excelimporter.Credentials;
+import com.prodactivv.excelimporter.utils.HashingAndEncoding;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Optional;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -20,6 +22,7 @@ public class ApiClient {
 
     public static Optional<String> getLoginToken(String server, String login, String password) {
 
+//        String userKey = String.format("%s:%s", login, password);
         String userKey = String.format("%s:%s", login, Hashing.sha256().hashString(password, StandardCharsets.UTF_8));
         userKey = BaseEncoding.base64().encode(userKey.getBytes(StandardCharsets.UTF_8));
 
@@ -33,18 +36,23 @@ public class ApiClient {
                             .getString("token")
             );
         } catch (Exception e) {
+            System.err.println(e.getMessage());
             return Optional.empty();
         }
     }
 
     public static SaveFormResult saveForm(Credentials credentials, String saveFormBody, String index) {
         try {
-
             JsonNode response = Unirest.post(String.format("%s/%s/%s", credentials.server(), SAVE_FORM_ENDPOINT, index))
-                    .header("Authorization", credentials.key())
+                    .headers(Map.ofEntries(
+                            Map.entry("Authorization", credentials.key()),
+                            Map.entry("checksum", HashingAndEncoding.getHmacSha512(saveFormBody))
+                    ))
                     .body(saveFormBody)
                     .asJson()
                     .getBody();
+
+//            System.out.println(response.toString());
 
             String error = response.getObject()
                     .getJSONObject("saveForm")
@@ -56,10 +64,14 @@ public class ApiClient {
                         response.getObject().getJSONObject("saveForm").getString("mess"),
                         Safelist.none()
                 );
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+                return new SaveFormResult(e.getMessage(), "", "");
+            }
 
             return new SaveFormResult(error, message, response.toString());
         } catch (UnirestException e) {
+            System.err.println(e.getMessage());
             return new SaveFormResult(e.getMessage(), "", "");
         }
     }

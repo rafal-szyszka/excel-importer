@@ -6,5 +6,6 @@ public record WorksheetConfig(
         String sheet,
         Integer formId,
         Integer startRow,
+        Integer endRow,
         List<ColumnMapping> mapping
 ) { }

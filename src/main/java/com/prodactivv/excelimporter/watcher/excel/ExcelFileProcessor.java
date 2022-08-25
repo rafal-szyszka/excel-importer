@@ -23,7 +23,7 @@ public class ExcelFileProcessor {
             DataFormatter dataFormatter = new DataFormatter();
 
             int currentRow = configuration.startRow() - 1;
-            int lastRow = sheet.getLastRowNum();
+            int lastRow = configuration.endRow() < currentRow ? sheet.getLastRowNum() : configuration.endRow() - 1;
 
             ObjectMapper mapper = new ObjectMapper();
 
@@ -32,6 +32,9 @@ public class ExcelFileProcessor {
                 saveRowData.put(FORM_ID_KEY, configuration.formId());
                 saveRowData.put(EASY_FORM_KEY, true);
                 Row row = sheet.getRow(currentRow++);
+
+                if (row == null) break;
+
                 for (ColumnMapping columnMapping : configuration.mapping()) {
                     Cell cell = CellUtil.getCell(row, CellReference.convertColStringToIndex(columnMapping.column()));
                     String cellValue = dataFormatter.formatCellValue(cell);

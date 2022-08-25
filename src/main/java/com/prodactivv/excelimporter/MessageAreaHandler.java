@@ -14,6 +14,11 @@ public class MessageAreaHandler implements IMessageAreaHandler {
     }
 
     @Override
+    public void setTag(String tag) {
+
+    }
+
+    @Override
     public void showNewDirectoryInfo(String name) {
         addMessage(
                 String.format("%s %s",
@@ -44,6 +49,7 @@ public class MessageAreaHandler implements IMessageAreaHandler {
                         textArea.getText()
                 )
         );
+        System.out.println(message);
     }
 
     @Override
