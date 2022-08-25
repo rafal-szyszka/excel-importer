@@ -13,7 +13,7 @@ Input command below to your terminal or console, it's one line! Note, be in `tar
 jpackage --name ExcelImporter 
 --input . 
 --main-jar ExcelImporter-{version}.jar 
---main-class com.prodactivv.excelimporter 
+--main-class com.prodactivv.excelimporter.App 
 --win-console       # this is required otherwise app won't start
 --win-dir-chooser   # optional, gives user an option to choose installation directory
 --win-shortcut      # optional, creates shortcut on desktop
@@ -24,7 +24,7 @@ jpackage --name ExcelImporter
 
 ```bash
 # copy paste
-jpackage --name ExcelImporter --input . --main-jar ExcelImporter-{version}.jar --main-class com.prodactivv.excelimporter --win-console --win-dir-chooser --win-shortcut --win-menu --win-menu-group "Bpower2" --icon icon.ico
+jpackage --name ExcelImporter --input . --main-jar ExcelImporter-{version}.jar --main-class com.prodactivv.excelimporter.App --win-console --win-dir-chooser --win-shortcut --win-menu --win-menu-group "Bpower2" --icon icon.ico
 ```
 
 ### Linux build

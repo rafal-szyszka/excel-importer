@@ -7,7 +7,7 @@ import com.prodactivv.excelimporter.watcher.excel.ExcelImporterService;
 import javafx.collections.FXCollections;
 import org.apache.commons.cli.*;
 
-import java.io.IOException;
+import java.io.*;
 
 public class App {
 
@@ -41,6 +41,10 @@ public class App {
         if (excelImporterService != null) {
             excelImporterService.killAllWatchers();
         }
+    }
+
+    private static PrintStream outputFile(String filename) throws FileNotFoundException {
+        return new PrintStream(new BufferedOutputStream(new FileOutputStream(filename)), true);
     }
 
     private static void runInClMode(String[] args, CommandLineParser parser, CliOptions cliOptions, ExcelImporterService excelImporterService) throws ParseException, InvalidCredentialsException {
