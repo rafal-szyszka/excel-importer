@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.collections.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="300.0" spacing="20.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.prodactivv.excelimporter.LoginPopupController">
-    <children>
-        <ChoiceBox fx:id="servers" prefWidth="300.0" value="https://b2ng.bpower2.com">
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="https://b2ng.bpower2.com" />
-                    <String fx:value="https://qa.bpower2.com" />
-                    <String fx:value="https://carlsberg.bpower2.com" />
-                    <String fx:value="https://carlsberg-qa.bpower2.com" />
-                    <String fx:value="https://clean-bgk.qa.bpower2.com" />
-                </FXCollections>
-            </items>
-        </ChoiceBox>
-        <TextField fx:id="login" promptText="Login" />
-        <PasswordField fx:id="password" promptText="Hasło" />
-        <Button fx:id="loginButton" mnemonicParsing="false" onAction="#signIn" text="Zaloguj" />
-    </children>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import java.lang.String?>
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="220.0" prefWidth="300.0" spacing="20.0" xmlns="http://javafx.com/javafx/16"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.prodactivv.excelimporter.LoginPopupController">
     <padding>
-        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
     </padding>
+    <ChoiceBox fx:id="servers" prefWidth="300.0" value="http://localhost">
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="http://localhost"/>
+            </FXCollections>
+        </items>
+    </ChoiceBox>
+    <!--        <ChoiceBox fx:id="servers" prefWidth="300.0" value="https://b2ng.bpower2.com">-->
+    <!--            <items>-->
+    <!--                <FXCollections fx:factory="observableArrayList">-->
+    <!--                    <String fx:value="https://b2ng.bpower2.com" />-->
+    <!--                    <String fx:value="https://qa.bpower2.com" />-->
+    <!--                    <String fx:value="https://carlsberg.bpower2.com" />-->
+    <!--                    <String fx:value="https://carlsberg-qa.bpower2.com" />-->
+    <!--                    <String fx:value="https://clean-bgk.qa.bpower2.com" />-->
+    <!--                </FXCollections>-->
+    <!--            </items>-->
+    <!--        </ChoiceBox>-->
+    <TextField fx:id="login" promptText="Login"/>
+    <PasswordField fx:id="password" promptText="Hasło"/>
+    <Button fx:id="loginButton" mnemonicParsing="false" onAction="#signIn" text="Zaloguj"/>
 </VBox>
