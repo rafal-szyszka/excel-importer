@@ -12,6 +12,8 @@ import java.io.IOException;
 
 public class GuiApp extends Application {
 
+    private final static String version = "1.8.0";
+
     private MainViewController controller;
 
     @Override
@@ -22,7 +24,7 @@ public class GuiApp extends Application {
     private void showApp(Stage stage, Credentials credentials) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(GuiApp.class.getResource("main-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1000, 400);
-        stage.setTitle("Bpower2 - Import!");
+        stage.setTitle("Bpower2 - Import! [%s]".formatted(version));
         stage.setScene(scene);
 
 
@@ -50,7 +52,7 @@ public class GuiApp extends Application {
         Scene loginScene = new Scene(loginLoader.load(), 300, 220);
         Stage loginStage = new Stage();
         loginStage.initModality(Modality.APPLICATION_MODAL);
-        loginStage.setTitle("Zaloguj się");
+        loginStage.setTitle("Zaloguj się [%s]".formatted(version));
         loginStage.setScene(loginScene);
 
 
