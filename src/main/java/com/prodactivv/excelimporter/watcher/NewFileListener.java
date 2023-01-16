@@ -4,10 +4,13 @@ import com.prodactivv.excelimporter.Credentials;
 import com.prodactivv.excelimporter.IMessageAreaHandler;
 import com.prodactivv.excelimporter.api.ApiClient;
 import com.prodactivv.excelimporter.api.SaveFormResult;
+import com.prodactivv.excelimporter.api.StartProcessParameters;
+import com.prodactivv.excelimporter.api.StartProcessResult;
 import com.prodactivv.excelimporter.utils.ExcelFiles;
 import com.prodactivv.excelimporter.watcher.excel.ExcelConfiguration;
 import com.prodactivv.excelimporter.watcher.excel.ExcelConfigurationLoader;
 import com.prodactivv.excelimporter.watcher.excel.ExcelFileProcessor;
+import com.prodactivv.excelimporter.watcher.excel.WorksheetConfig;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -19,6 +22,8 @@ import java.util.stream.Collectors;
 
 public class NewFileListener implements INewEntryInDirectoryListener {
 
+    public static final String SUCCESSES = "successes";
+    public static final String ERRORS = "errors";
     private final IMessageAreaHandler messageAreaHandler;
     private final String dirPath;
 
@@ -61,23 +66,22 @@ public class NewFileListener implements INewEntryInDirectoryListener {
                 Optional<List<String>> jsons = fileProcessor.mapExcelToConfiguration(Path.of(dirPath, pathToFile.toString()).toFile(), worksheetConfig);
                 jsons.ifPresentOrElse(
                         saveFormJsons -> {
-                            messageAreaHandler.addMessage(String.format("Wiersze do importu: %s", saveFormJsons.size()));
-                            Map<String, List<SaveFormResult>> results = saveFormJsons.stream()
-                                    .map(saveFormJson -> ApiClient.saveForm(credentials, saveFormJson, pathToFile.getFileName().toString()))
-                                    .peek(result -> messageAreaHandler.addMessage(result.error().equals("") ? result.message() : result.error() + "\n" + result.jsonResponse()))
-                                    .collect(Collectors.teeing(
-                                            Collectors.filtering(saveFormResult -> saveFormResult.error().equals(""), Collectors.toList()),
-                                            Collectors.filtering(saveFormResult -> !saveFormResult.error().equals(""), Collectors.toList()),
-                                            (successes, errors) -> Map.of("successes", successes, "errors", errors)
-                                    ));
+                            Map<String, List<SaveFormResult>> saveFormResults = saveForms(pathToFile, saveFormJsons);
+                            Map<String, List<StartProcessResult>> startProcessResults = startProcesses(worksheetConfig, saveFormResults.get(SUCCESSES));
 
-                            List<SaveFormResult> errors = results.get("errors");
+                            List<SaveFormResult> errors = saveFormResults.get(ERRORS);
                             if (errors.size() > 0) {
                                 errors.forEach(error -> messageAreaHandler.addMessage(error.message()));
                                 messageAreaHandler.addMessage("Szczegóły błędów:");
                             }
 
-                            messageAreaHandler.addMessage("Zakończono import!\n\tZaimportowano:\t" + results.get("successes").size() + "\n\tBłędy:\t\t\t" + errors.size());
+                            messageAreaHandler.addMessage(
+                                    "Zakończono import!\n\tZaimportowanych:\t\t\t" +
+                                    saveFormResults.get(SUCCESSES).size() +
+                                    "\n\tBłędów:\t\t\t\t\t" + errors.size() +
+                                    "\n\tUruchomionych procesów:\t\t" +
+                                    startProcessResults.get(SUCCESSES).size()
+                            );
                         },
                         () -> messageAreaHandler.addMessage("Brak danych do importu!")
                 );
@@ -90,6 +94,36 @@ public class NewFileListener implements INewEntryInDirectoryListener {
         }
 
         return Status.WARNING;
+    }
+
+    private Map<String, List<StartProcessResult>> startProcesses(WorksheetConfig worksheetConfig, List<SaveFormResult> saveFormResults) {
+        if (worksheetConfig.configId() == null) {
+            return Map.of(SUCCESSES, List.of(), ERRORS, List.of());
+        }
+
+        messageAreaHandler.addMessage(String.format("Uruchamianie %s procesów", saveFormResults.size()));
+        return saveFormResults.stream()
+                .map(saveFormResult -> ApiClient.startProcess(credentials, new StartProcessParameters(worksheetConfig.configId(), saveFormResult.modelName(), saveFormResult.id().toString())))
+                .peek(startProcessResult -> messageAreaHandler.addMessage(startProcessResult.instanceId() > -1 ?
+                        "Uruchomiono proces %s dla rekordu o id %s - id utworzonej instancji: %s".formatted(worksheetConfig.configId(), startProcessResult.recordId(), startProcessResult.instanceId()) :
+                        "Nie udało się uruchomić procesu %s dla rekordu o id %s".formatted(worksheetConfig.configId(), startProcessResult.recordId())))
+                .collect(Collectors.teeing(
+                        Collectors.filtering(startProcessResult -> startProcessResult.instanceId() > -1, Collectors.toList()),
+                        Collectors.filtering(startProcessResult -> startProcessResult.instanceId() == -1, Collectors.toList()),
+                        (successes, errors) -> Map.of(SUCCESSES, successes, ERRORS, errors)
+                ));
+    }
+
+    private Map<String, List<SaveFormResult>> saveForms(Path pathToFile, List<String> saveFormJsons) {
+        messageAreaHandler.addMessage(String.format("Importowanie %s rekordów", saveFormJsons.size()));
+        return saveFormJsons.stream()
+                .map(saveFormJson -> ApiClient.saveForm(credentials, saveFormJson, pathToFile.getFileName().toString()))
+                .peek(result -> messageAreaHandler.addMessage(result.error().equals("") ? result.message() : result.error() + "\n" + result.jsonResponse()))
+                .collect(Collectors.teeing(
+                        Collectors.filtering(saveFormResult -> saveFormResult.error().equals(""), Collectors.toList()),
+                        Collectors.filtering(saveFormResult -> !saveFormResult.error().equals(""), Collectors.toList()),
+                        (successes, errors) -> Map.of(SUCCESSES, successes, ERRORS, errors)
+                ));
     }
 
     private Optional<ExcelConfiguration> getConfiguration(Path pathToFile) {

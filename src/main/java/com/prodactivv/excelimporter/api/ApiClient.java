@@ -8,9 +8,8 @@ import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
 import kong.unirest.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Safelist;
 
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +18,7 @@ public class ApiClient {
 
     private static final String LOGIN_ENDPOINT = "/index.php/restApi/generateJWT";
     private static final String SAVE_FORM_ENDPOINT = "/index.php/restApi/forms/method/saveForm/debug/1/groupIndex";
+    private static final String START_PROCESS_ENDPOINT = "/index.php/restApi/workflow/method/start/parameters";
 
     public static Optional<String> getLoginToken(String server, String login, String password) {
 
@@ -56,39 +56,47 @@ public class ApiClient {
             JSONObject savedFormData = response.getObject().getJSONObject("saveForm");
             String error = savedFormData.getString("error");
 
-            String message;
+            String message, modelName;
             Long id;
             try {
-                message = getMessage(savedFormData);
-                id = getId(savedFormData);
+                message = SaveFormEndpointHelper.getMessage(savedFormData);
+                id = SaveFormEndpointHelper.getId(savedFormData);
+                modelName = SaveFormEndpointHelper.getModelName(savedFormData);
             } catch (Exception e) {
                 System.err.println(e.getMessage());
-                return new SaveFormResult(e.getMessage(), "", "", -1L);
+                return new SaveFormResult(e.getMessage(), "", "", "", -1L);
             }
 
-            return new SaveFormResult(error, message, response.toString(), id);
+            return new SaveFormResult(error, message, response.toString(), modelName, id);
         } catch (UnirestException e) {
             System.err.println(e.getMessage());
-            return new SaveFormResult(e.getMessage(), "", "", -1L);
+            return new SaveFormResult(e.getMessage(), "", "", "", -1L);
         }
     }
 
-    private static String getMessage(JSONObject savedFormData) {
-        return Jsoup.clean(
-                savedFormData.getString("mess"),
-                Safelist.none()
-        );
+    public static StartProcessResult startProcess(Credentials credentials, StartProcessParameters startParameters) {
+        JsonNode response;
+        try {
+            String url = String.format("%s%s/", credentials.server(), START_PROCESS_ENDPOINT);
+            url += URLEncoder.encode("{\"configId\":" + startParameters.configId() + "}", StandardCharsets.UTF_8);
+            response = Unirest.post(url)
+                    .headers(Map.ofEntries(
+                            Map.entry("Authorization", credentials.key())
+                    ))
+                    .body(startParameters.initialData())
+                    .asJson()
+                    .getBody();
+
+            return new StartProcessResult(
+                    Integer.valueOf(response.getObject().getJSONObject("start").getString("instanceId")),
+                    Integer.valueOf(startParameters.initialData().dataId)
+            );
+
+        } catch (Throwable t) {
+            System.err.println(t.getMessage());
+            return new StartProcessResult(-1, Integer.valueOf(startParameters.initialData().dataId));
+        }
+
+
     }
-
-    private static Long getId(JSONObject savedFormData) {
-        String mainModelName = (String) savedFormData
-                .getJSONObject("ids")
-                .names()
-                .get(0);
-
-        return savedFormData.getJSONObject("ids")
-                .getJSONArray(mainModelName)
-                .getLong(0);
-    }
-
 }
