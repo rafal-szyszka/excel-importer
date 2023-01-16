@@ -7,5 +7,6 @@ public record WorksheetConfig(
         Integer formId,
         Integer startRow,
         Integer endRow,
+        Integer configId,
         List<ColumnMapping> mapping
 ) { }
