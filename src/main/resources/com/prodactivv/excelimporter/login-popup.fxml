@@ -7,7 +7,7 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
-<?import java.lang.*?>
+<?import java.lang.String?>
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
       prefHeight="220.0" prefWidth="300.0" spacing="20.0" xmlns="http://javafx.com/javafx/16"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.prodactivv.excelimporter.LoginPopupController">
@@ -21,14 +21,10 @@
 <!--            </FXCollections>-->
 <!--        </items>-->
 <!--    </ChoiceBox>-->
-            <ChoiceBox fx:id="servers" prefWidth="300.0" value="https://b2ng.bpower2.com">
+            <ChoiceBox fx:id="servers" prefWidth="300.0" value="http://localhost">
                 <items>
                     <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="https://b2ng.bpower2.com" />
-                        <String fx:value="https://qa.bpower2.com" />
-                        <String fx:value="https://carlsberg.bpower2.com" />
-                        <String fx:value="https://carlsberg-qa.bpower2.com" />
-                        <String fx:value="https://clean-bgk.qa.bpower2.com" />
+                        <String fx:value="http://localhost" />
                     </FXCollections>
                 </items>
             </ChoiceBox>

@@ -24,7 +24,7 @@ jpackage --name ExcelImporter
 
 ```bash
 # copy paste
-jpackage --name ExcelImporter --input . --main-jar ExcelImporter-{version}.jar --main-class com.prodactivv.excelimporter.App --win-console --win-dir-chooser --win-shortcut --win-menu --win-menu-group "Bpower2" --icon icon.ico
+jpackage --name ExcelImporter --app-version x.x.x --input . --main-jar ExcelImporter-{version}.jar --main-class com.prodactivv.excelimporter.App --win-console --win-dir-chooser --win-shortcut --win-menu --win-menu-group "Bpower2" --icon icon.ico
 ```
 
 ### Linux build
