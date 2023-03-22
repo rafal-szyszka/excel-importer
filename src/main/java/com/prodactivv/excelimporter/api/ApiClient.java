@@ -1,6 +1,5 @@
 package com.prodactivv.excelimporter.api;
 
-import com.google.common.hash.Hashing;
 import com.google.common.io.BaseEncoding;
 import com.prodactivv.excelimporter.Credentials;
 import com.prodactivv.excelimporter.utils.HashingAndEncoding;
@@ -21,8 +20,8 @@ public class ApiClient {
 
     public static Optional<String> getLoginToken(String server, String login, String password) {
 
-//        String userKey = String.format("%s:%s", login, password);
-        String userKey = String.format("%s:%s", login, Hashing.sha256().hashString(password, StandardCharsets.UTF_8));
+        String userKey = String.format("%s:%s", login, password);
+//        String userKey = String.format("%s:%s", login, Hashing.sha256().hashString(password, StandardCharsets.UTF_8));
         userKey = BaseEncoding.base64().encode(userKey.getBytes(StandardCharsets.UTF_8));
 
         try {

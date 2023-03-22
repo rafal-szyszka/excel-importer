@@ -29,3 +29,12 @@ jpackage --name ExcelImporter --app-version x.x.x --input . --main-jar ExcelImpo
 
 ### Linux build
 Just use `maven package`. ExcelImporter-{version}.jar generated in `target` dir is the right file to run on Linux platform (from terminal obviously).
+
+
+## notes
+DEV/TEST:
+http://bpower2test1.bank.com.pl
+PREPROD:
+https://bpower2pre1.bank.com.pl
+PROD:
+https://bp2dealer.bank.com.pl
