@@ -4,7 +4,7 @@
   <groupId>com.prodactivv</groupId>
   <artifactId>ExcelImporter</artifactId>
   <name>ExcelImporter</name>
-  <version>1.7</version>
+  <version>1.9.0</version>
   <build>
     <plugins>
       <plugin>
@@ -25,6 +25,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <finalName>${name}-${project.version}</finalName>
               <transformers>
                 <transformer>
                   <mainClass>com.prodactivv.excelimporter.App</mainClass>
@@ -94,8 +95,16 @@
     </dependency>
   </dependencies>
   <properties>
+    <jackson-databind.version>2.13.4.1</jackson-databind.version>
+    <unirest-java.version>3.14.1</unirest-java.version>
+    <poi.version>5.1.0</poi.version>
+    <commons-cli.version>1.5.0</commons-cli.version>
+    <json.version>20220320</json.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jsoup.version>1.15.3</jsoup.version>
     <javafx.version>17.0.1</javafx.version>
     <junit.version>5.8.1</junit.version>
+    <jackson.version>2.13.1</jackson.version>
+    <guava.version>31.1-jre</guava.version>
   </properties>
 </project>

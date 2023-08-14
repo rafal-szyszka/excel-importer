@@ -1,12 +1,10 @@
 package com.prodactivv.excelimporter.api;
 
-import com.google.common.hash.Hashing;
 import com.google.common.io.BaseEncoding;
 import com.prodactivv.excelimporter.Credentials;
 import com.prodactivv.excelimporter.utils.HashingAndEncoding;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
-import kong.unirest.UnirestException;
 import kong.unirest.json.JSONObject;
 
 import java.net.URLEncoder;
@@ -22,8 +20,8 @@ public class ApiClient {
 
     public static Optional<String> getLoginToken(String server, String login, String password) {
 
-//        String userKey = String.format("%s:%s", login, password);
-        String userKey = String.format("%s:%s", login, Hashing.sha256().hashString(password, StandardCharsets.UTF_8));
+        String userKey = String.format("%s:%s", login, password);
+//        String userKey = String.format("%s:%s", login, Hashing.sha256().hashString(password, StandardCharsets.UTF_8));
         userKey = BaseEncoding.base64().encode(userKey.getBytes(StandardCharsets.UTF_8));
 
         try {
@@ -56,26 +54,21 @@ public class ApiClient {
             JSONObject savedFormData = response.getObject().getJSONObject("saveForm");
             String error = savedFormData.getString("error");
 
-            String message, modelName;
-            Long id;
-            try {
-                message = SaveFormEndpointHelper.getMessage(savedFormData);
-                id = SaveFormEndpointHelper.getId(savedFormData);
-                modelName = SaveFormEndpointHelper.getModelName(savedFormData);
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-                return new SaveFormResult(e.getMessage(), "", "", "", -1L);
-            }
-
-            return new SaveFormResult(error, message, response.toString(), modelName, id);
-        } catch (UnirestException e) {
+            return new SaveFormResult(
+                    error,
+                    SaveFormEndpointHelper.getMessage(savedFormData),
+                    response.toString(),
+                    SaveFormEndpointHelper.getModelName(savedFormData),
+                    SaveFormEndpointHelper.getId(savedFormData)
+            );
+        } catch (Throwable e) {
             System.err.println(e.getMessage());
             return new SaveFormResult(e.getMessage(), "", "", "", -1L);
         }
     }
 
     public static StartProcessResult startProcess(Credentials credentials, StartProcessParameters startParameters) {
-        JsonNode response;
+        JsonNode response = null;
         try {
             String url = String.format("%s%s/", credentials.server(), START_PROCESS_ENDPOINT);
             url += URLEncoder.encode("{\"configId\":" + startParameters.configId() + "}", StandardCharsets.UTF_8);
@@ -94,6 +87,9 @@ public class ApiClient {
 
         } catch (Throwable t) {
             System.err.println(t.getMessage());
+            if (response != null) {
+                System.err.println(response.toPrettyString());
+            }
             return new StartProcessResult(-1, Integer.valueOf(startParameters.initialData().dataId));
         }
 

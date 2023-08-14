@@ -3,5 +3,5 @@ package com.prodactivv.excelimporter.watcher.excel;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record ColumnMapping(String column, String techName) {
+public record ColumnMapping(String column, int row, String techName) {
 }

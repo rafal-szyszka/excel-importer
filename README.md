@@ -24,8 +24,17 @@ jpackage --name ExcelImporter
 
 ```bash
 # copy paste
-jpackage --name ExcelImporter --input . --main-jar ExcelImporter-{version}.jar --main-class com.prodactivv.excelimporter.App --win-console --win-dir-chooser --win-shortcut --win-menu --win-menu-group "Bpower2" --icon icon.ico
+jpackage --name ExcelImporter --app-version x.x.x --input . --main-jar ExcelImporter-{version}.jar --main-class com.prodactivv.excelimporter.App --win-console --win-dir-chooser --win-shortcut --win-menu --win-menu-group "Bpower2" --icon icon.ico
 ```
 
 ### Linux build
 Just use `maven package`. ExcelImporter-{version}.jar generated in `target` dir is the right file to run on Linux platform (from terminal obviously).
+
+
+## notes
+DEV/TEST:
+http://bpower2test1.bank.com.pl
+PREPROD:
+https://bpower2pre1.bank.com.pl
+PROD:
+https://bp2dealer.bank.com.pl

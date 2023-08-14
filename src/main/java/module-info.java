@@ -17,6 +17,7 @@ module com.prodactivv.excelimporter {
     exports com.prodactivv.excelimporter.api;
     exports com.prodactivv.excelimporter.utils;
     exports com.prodactivv.excelimporter.watcher;
+    exports com.prodactivv.excelimporter.watcher.excel.configuration;
     exports com.prodactivv.excelimporter.watcher.excel;
     exports com.prodactivv.excelimporter.watcher.domain;
 }
