@@ -6,7 +6,7 @@
 
     <groupId>com.prodactivv</groupId>
     <artifactId>ExcelImporter</artifactId>
-    <version>1.9.0</version>
+    <version>1.11.5</version>
     <name>ExcelImporter</name>
 
     <properties>

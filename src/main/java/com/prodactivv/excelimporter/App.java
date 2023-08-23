@@ -3,8 +3,6 @@ package com.prodactivv.excelimporter;
 import com.prodactivv.excelimporter.cli.CliApp;
 import com.prodactivv.excelimporter.cli.CliMessageHandler;
 import com.prodactivv.excelimporter.exceptions.InvalidCredentialsException;
-import com.prodactivv.excelimporter.watcher.excel.ExcelImporterService;
-import javafx.collections.FXCollections;
 import org.apache.commons.cli.*;
 
 import java.io.*;
@@ -13,7 +11,6 @@ public class App {
 
     public static void main(String[] args) {
         int exit = -1;
-        ExcelImporterService excelImporterService = null;
         CommandLineParser parser = new DefaultParser();
         try {
             CliOptions cliOptions = new CliOptions();
@@ -23,10 +20,7 @@ public class App {
 
             if (line.hasOption(CliOptions.WINDOW_LESS)) {
                 CliMessageHandler messageAreaHandler = new CliMessageHandler();
-                excelImporterService = new ExcelImporterService(
-                        FXCollections.observableHashMap(), messageAreaHandler, null
-                );
-                runInClMode(args, parser, cliOptions, excelImporterService);
+                runInClMode(args, parser, cliOptions);
                 System.out.println("Press enter to exit");
                 //noinspection UnusedAssignment
                 exit = System.in.read();
@@ -38,16 +32,13 @@ public class App {
             System.err.println(e.getMessage());
         }
 
-        if (excelImporterService != null) {
-            excelImporterService.killAllWatchers();
-        }
     }
 
     private static PrintStream outputFile(String filename) throws FileNotFoundException {
         return new PrintStream(new BufferedOutputStream(new FileOutputStream(filename)), true);
     }
 
-    private static void runInClMode(String[] args, CommandLineParser parser, CliOptions cliOptions, ExcelImporterService excelImporterService) throws ParseException, InvalidCredentialsException {
+    private static void runInClMode(String[] args, CommandLineParser parser, CliOptions cliOptions) throws ParseException, InvalidCredentialsException {
         CommandLine line = parser.parse(cliOptions.getRequiredInWindowLessModeOptions(), args);
 
         String optionalDirsValue = line.getOptionValue(CliOptions.DIRS);

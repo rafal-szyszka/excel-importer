@@ -1,7 +1,6 @@
 package com.prodactivv.excelimporter.watcher.excel.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.prodactivv.excelimporter.utils.ExcelFiles;
 import com.prodactivv.excelimporter.watcher.excel.ExcelConfiguration;
 
 import java.nio.file.Files;
@@ -11,13 +10,13 @@ import java.util.Optional;
 
 public abstract class ConfigurationLoader<Location> {
 
-    public Optional<ExcelConfiguration> load(Location location, Path fileName) {
-        Optional<Path> configInLocation = findConfigInLocation(location, fileName);
+    public Optional<ExcelConfiguration> load(Path fileName) {
+        Optional<Path> configInLocation = findConfigInLocation(fileName);
         if (configInLocation.isEmpty()) {
             return Optional.empty();
         }
 
-        Path configPath = Paths.get(ExcelFiles.getFileNameWithoutExtension(configInLocation.get()) + ".json");
+        Path configPath = configInLocation.get();
 
         if (!Files.exists(configPath)) {
             return Optional.empty();
@@ -32,5 +31,6 @@ public abstract class ConfigurationLoader<Location> {
             return Optional.empty();
         }
     }
-    protected abstract Optional<Path> findConfigInLocation(Location location, Path fileName);
+
+    protected abstract Optional<Path> findConfigInLocation(Path fileName);
 }

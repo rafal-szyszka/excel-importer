@@ -7,7 +7,12 @@ import com.prodactivv.excelimporter.watcher.DeletedFileListener;
 import com.prodactivv.excelimporter.watcher.DirectoryWatcherTask;
 import com.prodactivv.excelimporter.watcher.ModifiedFileListener;
 import com.prodactivv.excelimporter.watcher.NewFileListener;
+import com.prodactivv.excelimporter.watcher.excel.ExcelConfigurationLoader;
 import com.prodactivv.excelimporter.watcher.excel.ExcelFileProcessor;
+import com.prodactivv.excelimporter.watcher.excel.configuration.CloudConfigurationLoader;
+import com.prodactivv.excelimporter.watcher.excel.configuration.DefaultConfigurationLoader;
+import com.prodactivv.excelimporter.watcher.excel.configuration.ExactConfigurationLoader;
+import com.prodactivv.excelimporter.watcher.excel.configuration.GroupConfigurationLoader;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,7 +25,7 @@ public class CliApp {
     private final String password;
     private final String fileToImport;
     private final List<String> dirsToMonitor;
-
+    private final ExcelConfigurationLoader configLoader;
 
     public CliApp(String server, String user, String password, String fileToImport, String[] dirsToMonitor) {
         this.server = server;
@@ -28,6 +33,14 @@ public class CliApp {
         this.password = password;
         this.fileToImport = fileToImport;
         this.dirsToMonitor = dirsToMonitor == null ? new ArrayList<>() : List.of(dirsToMonitor);
+
+        this.configLoader = new ExcelConfigurationLoader.Builder()
+                .setCloudConfigLoader(new CloudConfigurationLoader())
+                .setExactConfigLoader(new ExactConfigurationLoader())
+                .setGroupConfigLoader(new GroupConfigurationLoader())
+                .setDefaultConfigurationLoader(new DefaultConfigurationLoader())
+                .build();
+
     }
 
     public void run() throws InvalidCredentialsException {
@@ -39,7 +52,7 @@ public class CliApp {
             monitorDirs(credentials);
         } else {
             File file = new File(fileToImport);
-            new NewFileListener(new CliMessageHandler(), file.getParentFile().getAbsolutePath(), new ExcelFileProcessor(), credentials)
+            new NewFileListener(new CliMessageHandler(), file.getParentFile().getAbsolutePath(), new ExcelFileProcessor(), configLoader, credentials)
                 .runForPath(file.toPath().getFileName());
         }
     }
@@ -52,7 +65,7 @@ public class CliApp {
                         dir -> {
                             DirectoryWatcherTask watcherTask = new DirectoryWatcherTask(
                                     dir.toPath(),
-                                    new NewFileListener(new CliMessageHandler(), dir.getAbsolutePath(), new ExcelFileProcessor(), credentials),
+                                    new NewFileListener(new CliMessageHandler(), dir.getAbsolutePath(), new ExcelFileProcessor(), configLoader, credentials),
                                     new DeletedFileListener(),
                                     new ModifiedFileListener()
                             );

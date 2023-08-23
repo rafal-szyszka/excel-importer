@@ -12,7 +12,6 @@ import com.prodactivv.excelimporter.watcher.excel.ExcelConfigurationLoader;
 import com.prodactivv.excelimporter.watcher.excel.ExcelFileProcessor;
 import com.prodactivv.excelimporter.watcher.excel.WorksheetConfig;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -28,12 +27,15 @@ public class NewFileListener implements INewEntryInDirectoryListener {
     private final String dirPath;
 
     private final ExcelFileProcessor fileProcessor;
+
+    private final ExcelConfigurationLoader configLoader;
     private final Credentials credentials;
 
-    public NewFileListener(IMessageAreaHandler messageAreaHandler, String dirPath, ExcelFileProcessor fileProcessor, Credentials credentials) {
+    public NewFileListener(IMessageAreaHandler messageAreaHandler, String dirPath, ExcelFileProcessor fileProcessor, ExcelConfigurationLoader configLoader, Credentials credentials) {
         this.messageAreaHandler = messageAreaHandler;
         this.dirPath = dirPath;
         this.fileProcessor = fileProcessor;
+        this.configLoader = configLoader;
         this.credentials = credentials;
     }
 
@@ -63,7 +65,7 @@ public class NewFileListener implements INewEntryInDirectoryListener {
 
             excelConfiguration.configurations().forEach(worksheetConfig -> {
                 messageAreaHandler.addMessage("Przetwarzanie: " + worksheetConfig.sheet());
-                Optional<List<String>> jsons = fileProcessor.mapExcelToConfiguration(Path.of(dirPath, pathToFile.toString()).toFile(), worksheetConfig);
+                Optional<List<String>> jsons = fileProcessor.mapExcelToConfiguration(Path.of(pathToFile.toString()).toFile(), worksheetConfig);
                 jsons.ifPresentOrElse(
                         saveFormJsons -> {
                             Map<String, List<SaveFormResult>> saveFormResults = saveForms(pathToFile, saveFormJsons);
@@ -91,6 +93,7 @@ public class NewFileListener implements INewEntryInDirectoryListener {
 
         } catch (Throwable e) {
             messageAreaHandler.addMessage(e.getMessage());
+            e.printStackTrace();
         }
 
         return Status.WARNING;
@@ -127,43 +130,12 @@ public class NewFileListener implements INewEntryInDirectoryListener {
     }
 
     private Optional<ExcelConfiguration> getConfiguration(Path pathToFile) {
-        ExcelConfigurationLoader loader = new ExcelConfigurationLoader();
         try {
-            return Optional.ofNullable(loader.loadConfiguration(Path.of(dirPath, pathToFile.toString())));
-        } catch (IOException e) {
+            return Optional.ofNullable(configLoader.loadConfiguration(credentials, pathToFile));
+        } catch (Exception e) {
             messageAreaHandler.addMessage(e.getMessage());
-            try {
-                Optional<Path> configFilePath = loader.getAllGroupConfigFiles(Path.of(dirPath))
-                        .stream()
-                        .filter(path -> {
-                            String configFileName = path.toFile().getName();
-                            return pathToFile.toFile().getName().startsWith(
-                                    configFileName.substring(
-                                            configFileName.indexOf("-") + 1,
-                                            configFileName.lastIndexOf(".")
-                                    )
-                            );
-                        })
-                        .findFirst();
-                if (configFilePath.isPresent()) {
-                    return Optional.ofNullable(loader.loadConfiguration(configFilePath.get()));
-                } else {
-                    messageAreaHandler.addMessage("Brak konfiguracji grupowej");
-                    return getDefaultExcelConfiguration(loader);
-                }
-            } catch (IOException ex) {
-                messageAreaHandler.addMessage(ex.getMessage());
-                return getDefaultExcelConfiguration(loader);
-            }
+            e.printStackTrace();
+            return Optional.empty();
         }
-    }
-
-    private Optional<ExcelConfiguration> getDefaultExcelConfiguration(ExcelConfigurationLoader loader) {
-        try {
-            return Optional.ofNullable(loader.loadConfiguration(Path.of(dirPath, ExcelConfigurationLoader.DEFAULT_CONFIG_FILE)));
-        } catch (IOException exc) {
-            messageAreaHandler.addMessage(exc.getMessage());
-        }
-        return Optional.empty();
     }
 }

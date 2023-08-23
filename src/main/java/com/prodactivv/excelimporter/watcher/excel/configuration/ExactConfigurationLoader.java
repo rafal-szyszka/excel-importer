@@ -9,10 +9,10 @@ import java.util.Optional;
 public class ExactConfigurationLoader extends ConfigurationLoader<ProcessedFileRootConfigurationLocation> {
 
     @Override
-    protected Optional<Path> findConfigInLocation(ProcessedFileRootConfigurationLocation location, Path fileName) {
+    protected Optional<Path> findConfigInLocation(Path fileName) {
         Path configPath = Path.of(
-                location.getLocationString(),
-                ExcelFiles.getFileNameWithoutExtension(fileName)  + ".json"
+                fileName.getParent().toAbsolutePath().toString(),
+                ExcelFiles.getFileNameWithoutExtension(fileName) + ".json"
         );
         return Files.exists(configPath) ? Optional.of(configPath) : Optional.empty();
     }

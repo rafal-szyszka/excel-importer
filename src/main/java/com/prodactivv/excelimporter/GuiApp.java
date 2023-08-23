@@ -1,6 +1,5 @@
 package com.prodactivv.excelimporter;
 
-import com.prodactivv.excelimporter.watcher.excel.ExcelImporterService;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +11,7 @@ import java.io.IOException;
 
 public class GuiApp extends Application {
 
-    private final static String version = "1.9.0";
+    private final static String version = "1.11.5";
 
     private MainViewController controller;
 
@@ -39,11 +38,11 @@ public class GuiApp extends Application {
                         messageAreaHandler
                 )
         );
-        controller.setImporterService(new ExcelImporterService(
+        controller.initImporterService(
                 FXCollections.observableHashMap(),
                 messageAreaHandler,
                 credentials
-        ));
+        );
         stage.show();
     }
 
