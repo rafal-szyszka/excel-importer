@@ -20,18 +20,20 @@ public class ExcelImporterService {
     private final ObservableMap<UUID, TraceableWatcherTaskThread> runningThreads;
     private final IMessageAreaHandler messageAreaHandler;
     private final Credentials credentials;
+    private final ExcelConfigurationLoader configLoader;
 
-    public ExcelImporterService(ObservableMap<UUID, TraceableWatcherTaskThread> runningThreads, IMessageAreaHandler messageAreaHandler, Credentials credentials) {
+    private ExcelImporterService(ObservableMap<UUID, TraceableWatcherTaskThread> runningThreads, IMessageAreaHandler messageAreaHandler, Credentials credentials, ExcelConfigurationLoader configLoader) {
         this.runningThreads = runningThreads;
         this.messageAreaHandler = messageAreaHandler;
         this.credentials = credentials;
+        this.configLoader = configLoader;
     }
 
     public Pair<UUID, DirectoryWatcherTask> addWatchedDirectory(File file) {
         UUID uuid = UUID.nameUUIDFromBytes(file.getAbsolutePath().getBytes(StandardCharsets.UTF_8));
         DirectoryWatcherTask watcherTask = new DirectoryWatcherTask(
                 file.toPath(),
-                new NewFileListener(messageAreaHandler, file.getAbsolutePath(), new ExcelFileProcessor(), credentials),
+                new NewFileListener(messageAreaHandler, file.getAbsolutePath(), new ExcelFileProcessor(), configLoader, credentials),
                 new DeletedFileListener(),
                 new ModifiedFileListener()
         );
@@ -46,8 +48,8 @@ public class ExcelImporterService {
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() {
-                (new NewFileListener(messageAreaHandler, file.getParentFile().getAbsolutePath(), new ExcelFileProcessor(), credentials))
-                        .runForPath(file.toPath().getFileName());
+                (new NewFileListener(messageAreaHandler, file.getParentFile().getAbsolutePath(), new ExcelFileProcessor(), configLoader, credentials))
+                        .runForPath(file.toPath());
                 return null;
             }
         };
@@ -61,5 +63,41 @@ public class ExcelImporterService {
 
     public void killWatcher(UUID uuid) {
         runningThreads.get(uuid).thread().interrupt();
+    }
+
+    public static class Builder {
+        private ObservableMap<UUID, TraceableWatcherTaskThread> runningThreads;
+        private IMessageAreaHandler messageAreaHandler;
+        private Credentials credentials;
+        private ExcelConfigurationLoader configLoader;
+
+        public ExcelImporterService build() {
+            return new ExcelImporterService(
+                    runningThreads,
+                    messageAreaHandler,
+                    credentials,
+                    configLoader
+            );
+        }
+
+        public Builder setRunningThreads(ObservableMap<UUID, TraceableWatcherTaskThread> runningThreads) {
+            this.runningThreads = runningThreads;
+            return this;
+        }
+
+        public Builder setMessageAreaHandler(IMessageAreaHandler messageAreaHandler) {
+            this.messageAreaHandler = messageAreaHandler;
+            return this;
+        }
+
+        public Builder setCredentials(Credentials credentials) {
+            this.credentials = credentials;
+            return this;
+        }
+
+        public Builder setConfigLoader(ExcelConfigurationLoader configLoader) {
+            this.configLoader = configLoader;
+            return this;
+        }
     }
 }

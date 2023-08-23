@@ -1,14 +1,21 @@
 package com.prodactivv.excelimporter.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.BaseEncoding;
 import com.prodactivv.excelimporter.Credentials;
 import com.prodactivv.excelimporter.utils.HashingAndEncoding;
+import com.prodactivv.excelimporter.watcher.excel.ExcelConfiguration;
+import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
+import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -17,6 +24,34 @@ public class ApiClient {
     private static final String LOGIN_ENDPOINT = "/index.php/restApi/generateJWT";
     private static final String SAVE_FORM_ENDPOINT = "/index.php/restApi/forms/method/saveForm/debug/1/groupIndex";
     private static final String START_PROCESS_ENDPOINT = "/index.php/restApi/workflow/method/start/parameters";
+    private static final String APP_CONFIG_ENDPOINT = "/index.php/ApiV2/applications/configuration";
+
+    public static Optional<List<ExcelConfiguration>> getAppConfiguration(Credentials credentials, String uuid, String key) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String appToken = AppTokenGenerator.generateToken(uuid, key);
+
+            String endpoint = String.format("%s%s", credentials.server(), APP_CONFIG_ENDPOINT);
+            HttpResponse<JsonNode> jsonNodeHttpResponse = Unirest.get(endpoint)
+                    .queryString("uuid", uuid)
+                    .header("Authorization", String.format("Bearer %s", appToken))
+                    .responseEncoding(StandardCharsets.UTF_8.name())
+                    .asJson();
+
+            JSONArray jsonArray = jsonNodeHttpResponse
+                    .getBody()
+                    .getArray()
+                    .getJSONObject(0)
+                    .getJSONArray("configJSON");
+
+            return Optional.ofNullable(mapper.readValue(jsonArray.toString(), new TypeReference<>() {
+            }));
+        } catch (JsonProcessingException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
 
     public static Optional<String> getLoginToken(String server, String login, String password) {
 
@@ -29,6 +64,7 @@ public class ApiClient {
             return Optional.ofNullable(
                     Unirest.post(endpoint)
                             .body(String.format("{\"user-key\":\"%s\"}", userKey))
+                            .responseEncoding(StandardCharsets.UTF_8.name())
                             .asJson()
                             .getBody()
                             .getObject()
@@ -36,6 +72,7 @@ public class ApiClient {
             );
         } catch (Exception e) {
             System.err.println(e.getMessage());
+            e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -48,6 +85,7 @@ public class ApiClient {
                             Map.entry("checksum", HashingAndEncoding.getHmacSha512(saveFormBody))
                     ))
                     .body(saveFormBody)
+                    .responseEncoding(StandardCharsets.UTF_8.name())
                     .asJson()
                     .getBody();
 

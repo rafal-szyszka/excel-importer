@@ -28,13 +28,25 @@ jpackage --name ExcelImporter --app-version x.x.x --input . --main-jar ExcelImpo
 ```
 
 ### Linux build
-Just use `maven package`. ExcelImporter-{version}.jar generated in `target` dir is the right file to run on Linux platform (from terminal obviously).
-
+Just use `maven package`. ExcelImporter-{version}.jar generated in `target` dir is the right file to run on Linux
+platform (from terminal obviously).
 
 ## notes
+
 DEV/TEST:
 http://bpower2test1.bank.com.pl
 PREPROD:
 https://bpower2pre1.bank.com.pl
 PROD:
 https://bp2dealer.bank.com.pl
+
+## keys
+
+Test
+
+```json
+{
+  "uuid": "f89e2d38-3b5c-4c6d-8c34-4919fdc25636",
+  "key": "2646e101af79fe6dc826fec0aee9fc8207d47e2df70f7f1b90b9f7135147eaa0"
+}
+```

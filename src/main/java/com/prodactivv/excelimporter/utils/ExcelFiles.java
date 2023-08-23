@@ -12,7 +12,7 @@ public class ExcelFiles {
     }
 
     public static String getFileNameWithoutExtension(Path pathToFile) {
-        String pathString = pathToFile.toString();
+        String pathString = pathToFile.getFileName().toString();
         int dotIndex = pathString.lastIndexOf('.');
         return dotIndex == -1 ? pathString : pathString.substring(0, dotIndex);
     }

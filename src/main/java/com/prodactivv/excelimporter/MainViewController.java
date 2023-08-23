@@ -2,8 +2,16 @@ package com.prodactivv.excelimporter;
 
 import com.prodactivv.excelimporter.utils.ObservedEntryView;
 import com.prodactivv.excelimporter.watcher.DirectoryWatcherTask;
+import com.prodactivv.excelimporter.watcher.domain.TraceableWatcherTaskThread;
+import com.prodactivv.excelimporter.watcher.excel.ExcelConfigurationLoader;
 import com.prodactivv.excelimporter.watcher.excel.ExcelImporterService;
+import com.prodactivv.excelimporter.watcher.excel.configuration.CloudConfigurationLoader;
+import com.prodactivv.excelimporter.watcher.excel.configuration.DefaultConfigurationLoader;
+import com.prodactivv.excelimporter.watcher.excel.configuration.ExactConfigurationLoader;
+import com.prodactivv.excelimporter.watcher.excel.configuration.GroupConfigurationLoader;
+import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -16,10 +24,12 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.UUID;
 
-public class MainViewController {
+public class MainViewController implements Initializable {
 
     public static final int STATUS_DIODE = 1;
 
@@ -35,6 +45,7 @@ public class MainViewController {
 
     private Stage primaryStage;
     private ExcelImporterService importerService;
+    private ExcelConfigurationLoader configLoader;
 
     public void importSingleFile() {
         FileChooser fileChooser = new FileChooser();
@@ -73,8 +84,13 @@ public class MainViewController {
         monitoredCatalogsAreaHandler.maintainNoMonitoredDirsMessage();
     }
 
-    public void setImporterService(ExcelImporterService importerService) {
-        this.importerService = importerService;
+    public void initImporterService(ObservableMap<UUID, TraceableWatcherTaskThread> observableHashMap, MessageAreaHandler messageAreaHandler, Credentials credentials) {
+        importerService = new ExcelImporterService.Builder()
+                .setRunningThreads(observableHashMap)
+                .setMessageAreaHandler(messageAreaHandler)
+                .setCredentials(credentials)
+                .setConfigLoader(configLoader)
+                .build();
     }
 
     public TextArea getMessageArea() {
@@ -96,5 +112,15 @@ public class MainViewController {
 
     public void setCredentials(Credentials credentials) {
         loggedInAs.setText(String.format("Zalogowany jako: %s", credentials.login()));
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        configLoader = new ExcelConfigurationLoader.Builder()
+                .setCloudConfigLoader(new CloudConfigurationLoader())
+                .setExactConfigLoader(new ExactConfigurationLoader())
+                .setGroupConfigLoader(new GroupConfigurationLoader())
+                .setDefaultConfigurationLoader(new DefaultConfigurationLoader())
+                .build();
     }
 }

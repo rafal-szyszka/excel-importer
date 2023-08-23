@@ -18,14 +18,15 @@
         <items>
             <FXCollections fx:factory="observableArrayList">
                 <String fx:value="https://bp2dealer.bank.com.pl"/>
-                <String fx:value="https://bpower2pre1.bank.com.pl"/>
-                <String fx:value="https://testbpcrm.bank.com.pl"/>
+                <!--                <String fx:value="https://bpower2pre1.bank.com.pl"/>-->
+                <!--                <String fx:value="https://testbpcrm.bank.com.pl"/>-->
             </FXCollections>
         </items>
     </ChoiceBox>
 <!--            <ChoiceBox fx:id="servers" prefWidth="300.0" value="https://b2ng.bpower2.com">-->
 <!--                <items>-->
 <!--                    <FXCollections fx:factory="observableArrayList">-->
+    <!--                        <String fx:value="http://localhost" />-->
 <!--                        <String fx:value="https://b2ng.bpower2.com" />-->
 <!--                        <String fx:value="https://qa.bpower2.com" />-->
 <!--                        <String fx:value="https://carlsberg.bpower2.com" />-->

@@ -9,10 +9,10 @@ import java.util.stream.Stream;
 public class GroupConfigurationLoader extends ConfigurationLoader<ProcessedFileRootConfigurationLocation> {
 
     @Override
-    protected Optional<Path> findConfigInLocation(ProcessedFileRootConfigurationLocation location, Path fileName) {
-        try(
+    protected Optional<Path> findConfigInLocation(Path fileName) {
+        try (
                 Stream<Path> pathStream = Files.find(
-                        location.getLocation(),
+                        fileName.getParent(),
                         1,
                         (path, basicFileAttributes) -> path.toFile().getName().matches("config-([a-zA-Z0-9_-]+).json")
                 )
