@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 public class LoginPopupController {
 
     @FXML
-    private ChoiceBox<String> servers;
+    private ChoiceBox<ServerInfo> servers;
     @FXML
     private TextField login;
     @FXML
@@ -28,7 +28,7 @@ public class LoginPopupController {
         loginButton.setDisable(true);
         Stage stage = (Stage) password.getScene().getWindow();
 
-        ApiLoginTask loginTask = new ApiLoginTask(servers.getValue(), login.getText(), password.getText(), stage);
+        ApiLoginTask loginTask = new ApiLoginTask(servers.getValue().getVisible(), login.getText(), password.getText(), stage, servers.getValue().getAlgorithm());
         loginTask.addEventHandler(
                 WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 e -> loginTask.getValue().ifPresentOrElse(

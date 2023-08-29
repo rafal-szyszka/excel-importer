@@ -6,6 +6,7 @@ import com.prodactivv.excelimporter.exceptions.InvalidCredentialsException;
 import org.apache.commons.cli.*;
 
 import java.io.*;
+import java.util.Arrays;
 
 public class App {
 
@@ -47,7 +48,8 @@ public class App {
                 line.getOptionValue(CliOptions.USER),
                 line.getOptionValue(CliOptions.PASSWORD),
                 line.getOptionValue(CliOptions.FILE),
-                optionalDirsValue == null ? null : optionalDirsValue.split(",")
+                line.getOptionValues(CliOptions.ALGORITHM),
+                optionalDirsValue == null ? null : Arrays.toString(optionalDirsValue.split(","))
         )).run();
     }
 

@@ -3,10 +3,14 @@ package com.prodactivv.excelimporter.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
 import com.google.common.io.BaseEncoding;
 import com.prodactivv.excelimporter.Credentials;
+import com.prodactivv.excelimporter.ServerInfo;
 import com.prodactivv.excelimporter.utils.HashingAndEncoding;
 import com.prodactivv.excelimporter.watcher.excel.ExcelConfiguration;
+import javafx.collections.FXCollections;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
@@ -15,6 +19,7 @@ import kong.unirest.json.JSONObject;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -53,10 +58,11 @@ public class ApiClient {
         }
     }
 
-    public static Optional<String> getLoginToken(String server, String login, String password) {
-
-        String userKey = String.format("%s:%s", login, password);
-//        String userKey = String.format("%s:%s", login, Hashing.sha256().hashString(password, StandardCharsets.UTF_8));
+    public static Optional<String> getLoginToken(String server, String login, String password, String algorithm) {
+        //String userKey = String.format("%s:%s", login, password);
+        HashCode hashedPassword = algorithm.equals("sha512") ?
+                Hashing.sha512().hashString(password, StandardCharsets.UTF_8) : Hashing.sha256().hashString(password, StandardCharsets.UTF_8);
+        String userKey = String.format("%s:%s", login, hashedPassword);
         userKey = BaseEncoding.base64().encode(userKey.getBytes(StandardCharsets.UTF_8));
 
         try {

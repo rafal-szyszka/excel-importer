@@ -23,15 +23,17 @@ public class CliApp {
     private final String server;
     private final String user;
     private final String password;
+    private final String algorithm;
     private final String fileToImport;
     private final List<String> dirsToMonitor;
     private final ExcelConfigurationLoader configLoader;
 
-    public CliApp(String server, String user, String password, String fileToImport, String[] dirsToMonitor) {
+    public CliApp(String server, String user, String password, String fileToImport, String[] dirsToMonitor, String algorithm) {
         this.server = server;
         this.user = user;
         this.password = password;
         this.fileToImport = fileToImport;
+        this.algorithm = algorithm;
         this.dirsToMonitor = dirsToMonitor == null ? new ArrayList<>() : List.of(dirsToMonitor);
 
         this.configLoader = new ExcelConfigurationLoader.Builder()
@@ -44,8 +46,8 @@ public class CliApp {
     }
 
     public void run() throws InvalidCredentialsException {
-        Credentials credentials = ApiClient.getLoginToken(server, user, password)
-                .map(token -> new Credentials(server, user, token))
+        Credentials credentials = ApiClient.getLoginToken(server, user, password, algorithm)
+                .map(token -> new Credentials(server, user, token, algorithm))
                 .orElseThrow(new InvalidCredentialsException("Invalid credentials!"));
 
         if (dirsToMonitor != null) {
