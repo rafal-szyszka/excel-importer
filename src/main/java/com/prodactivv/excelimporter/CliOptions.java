@@ -21,6 +21,8 @@ public class CliOptions {
     public static final String PASSWORD_LONG = "password";
     public static final String SERVER_LONG = "server";
 
+    public static final String ALGORITHM = "algorithm";
+
     public Options getDefaultCommandLineOptions() {
         Options options = new Options();
         options.addOption(helpOption());

@@ -8,33 +8,33 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 <?import java.lang.String?>
+<?import com.prodactivv.excelimporter.ServerInfo?>
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
       prefHeight="220.0" prefWidth="300.0" spacing="20.0" xmlns="http://javafx.com/javafx/16"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.prodactivv.excelimporter.LoginPopupController">
     <padding>
         <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
     </padding>
-    <ChoiceBox fx:id="servers" prefWidth="300.0" value="https://bp2dealer.bank.com.pl">
+ <!--   <ChoiceBox fx:id="servers" prefWidth="300.0" value="https://bp2dealer.bank.com.pl">
         <items>
             <FXCollections fx:factory="observableArrayList">
-                <String fx:value="https://bp2dealer.bank.com.pl"/>
-                <!--                <String fx:value="https://bpower2pre1.bank.com.pl"/>-->
-                <!--                <String fx:value="https://testbpcrm.bank.com.pl"/>-->
+                <ServerInfo fx:factory="instance" visible="https://bp2dealer.bank.com.pl" algorithm="ssh256" />
+                &lt;!&ndash;                <String fx:value="https://bpower2pre1.bank.com.pl"/>&ndash;&gt;
+                &lt;!&ndash;                <String fx:value="https://testbpcrm.bank.com.pl"/>&ndash;&gt;
             </FXCollections>
         </items>
-    </ChoiceBox>
-<!--            <ChoiceBox fx:id="servers" prefWidth="300.0" value="https://b2ng.bpower2.com">-->
-<!--                <items>-->
-<!--                    <FXCollections fx:factory="observableArrayList">-->
-    <!--                        <String fx:value="http://localhost" />-->
-<!--                        <String fx:value="https://b2ng.bpower2.com" />-->
-<!--                        <String fx:value="https://qa.bpower2.com" />-->
-<!--                        <String fx:value="https://carlsberg.bpower2.com" />-->
-<!--                        <String fx:value="https://carlsberg-qa.bpower2.com" />-->
-<!--                        <String fx:value="https://clean-bgk.qa.bpower2.com" />-->
-<!--                    </FXCollections>-->
-<!--                </items>-->
-<!--            </ChoiceBox>-->
+    </ChoiceBox>-->
+            <ChoiceBox fx:id="servers" prefWidth="300.0" value="https://b2ng.bpower2.com">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <ServerInfo fx:factory="instance" visible="https://b2ng.bpower2.com" algorithm="sha256" />
+                        <ServerInfo fx:factory="instance" visible="https://qa.bpower2.com" algorithm="sha512" />
+                        <ServerInfo fx:factory="instance" visible="https://carlsberg.bpower2.com" algorithm="sha256" />
+                        <ServerInfo fx:factory="instance" visible="https://carlsberg-qa.bpower2.com" algorithm="sha256" />
+                        <ServerInfo fx:factory="instance" visible="https://clean-bgk.qa.bpower2.com" algorithm="sha256" />
+                    </FXCollections>
+                </items>
+            </ChoiceBox>
     <TextField fx:id="login" promptText="Login"/>
     <PasswordField fx:id="password" promptText="Hasło"/>
     <Button fx:id="loginButton" mnemonicParsing="false" onAction="#signIn" text="Zaloguj"/>
