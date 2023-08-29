@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.prodactivv.excelimporter.*?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -7,8 +8,6 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
-<?import java.lang.String?>
-<?import com.prodactivv.excelimporter.ServerInfo?>
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
       prefHeight="220.0" prefWidth="300.0" spacing="20.0" xmlns="http://javafx.com/javafx/16"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.prodactivv.excelimporter.LoginPopupController">
@@ -24,14 +23,20 @@
             </FXCollections>
         </items>
     </ChoiceBox>-->
-            <ChoiceBox fx:id="servers" prefWidth="300.0" value="https://b2ng.bpower2.com">
+            <ChoiceBox fx:id="servers" prefWidth="300.0">
                 <items>
                     <FXCollections fx:factory="observableArrayList">
-                        <ServerInfo fx:factory="instance" visible="https://b2ng.bpower2.com" algorithm="sha256" />
-                        <ServerInfo fx:factory="instance" visible="https://qa.bpower2.com" algorithm="sha512" />
-                        <ServerInfo fx:factory="instance" visible="https://carlsberg.bpower2.com" algorithm="sha256" />
-                        <ServerInfo fx:factory="instance" visible="https://carlsberg-qa.bpower2.com" algorithm="sha256" />
-                        <ServerInfo fx:factory="instance" visible="https://clean-bgk.qa.bpower2.com" algorithm="sha256" />
+                        <ServerInfo fx:factory="instance" visible="https://b2ng.bpower2.com" algorithm="sha256"/>
+                        <ServerInfo fx:factory="instance" visible="https://qa.bpower2.com" algorithm="sha256"/>
+                        <ServerInfo fx:factory="instance" visible="https://carlsberg.bpower2.com" algorithm="sha256"/>
+                        <ServerInfo fx:factory="instance" visible="https://carlsberg-qa.bpower2.com"
+                                    algorithm="sha256"/>
+                        <ServerInfo fx:factory="instance" visible="https://clean-bgk.qa.bpower2.com"
+                                    algorithm="sha256"/>
+                        <ServerInfo fx:factory="instance" visible="https://mh-ecommerce-php80.qa.bpower2.com"
+                                    algorithm="sha512"/>
+                        <ServerInfo fx:factory="instance" visible="https://e-commerce.mann-hummel-ft.pl"
+                                    algorithm="sha512"/>
                     </FXCollections>
                 </items>
             </ChoiceBox>
