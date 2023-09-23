@@ -1,16 +1,13 @@
 package com.prodactivv.excelimporter.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.io.BaseEncoding;
 import com.prodactivv.excelimporter.Credentials;
-import com.prodactivv.excelimporter.ServerInfo;
 import com.prodactivv.excelimporter.utils.HashingAndEncoding;
 import com.prodactivv.excelimporter.watcher.excel.ExcelConfiguration;
-import javafx.collections.FXCollections;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
@@ -19,7 +16,6 @@ import kong.unirest.json.JSONObject;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -51,7 +47,7 @@ public class ApiClient {
 
             return Optional.ofNullable(mapper.readValue(jsonArray.toString(), new TypeReference<>() {
             }));
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
             return Optional.empty();

@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class GuiApp extends Application {
 
-    private final static String version = "1.11.5";
+    private final static String version = "1.12.2";
 
     private MainViewController controller;
 
