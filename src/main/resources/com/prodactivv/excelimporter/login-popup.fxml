@@ -33,7 +33,7 @@
                                     algorithm="sha256"/>
                         <ServerInfo fx:factory="instance" visible="https://clean-bgk.qa.bpower2.com"
                                     algorithm="sha256"/>
-                        <ServerInfo fx:factory="instance" visible="https://mh-ecommerce-php80.qa.bpower2.com"
+                        <ServerInfo fx:factory="instance" visible="https://mh-ecommerce-qa.bpower2.com"
                                     algorithm="sha512"/>
                         <ServerInfo fx:factory="instance" visible="https://e-commerce.mann-hummel-ft.pl"
                                     algorithm="sha512"/>
