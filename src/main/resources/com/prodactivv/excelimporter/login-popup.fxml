@@ -27,7 +27,7 @@
                 <items>
                     <FXCollections fx:factory="observableArrayList">
                         <ServerInfo fx:factory="instance" visible="https://b2ng.bpower2.com" algorithm="sha256"/>
-                        <ServerInfo fx:factory="instance" visible="https://qa.bpower2.com" algorithm="sha512"/>
+                        <ServerInfo fx:factory="instance" visible="https://qa.bpower2.com" algorithm="sha256"/>
                         <ServerInfo fx:factory="instance" visible="https://carlsberg.bpower2.com" algorithm="sha256"/>
                         <ServerInfo fx:factory="instance" visible="https://carlsberg-qa.bpower2.com"
                                     algorithm="sha256"/>
