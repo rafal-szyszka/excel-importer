@@ -51,6 +51,9 @@ public class ExcelFileProcessor {
                 Row row = sheet.getRow(mapping.row() - 1);
                 Cell cell = CellUtil.getCell(row, currentColumn);
                 String cellValue = dataFormatter.formatCellValue(cell);
+                if (isNumeric(cellValue)) {
+                    cellValue = cellValue.replace(',', '.');
+                }
                 saveRowData.put(mapping.techName(), cellValue);
             }
             currentColumn++;
@@ -80,11 +83,19 @@ public class ExcelFileProcessor {
             for (ColumnMapping columnMapping : configuration.mapping()) {
                 Cell cell = CellUtil.getCell(row, CellReference.convertColStringToIndex(columnMapping.column()));
                 String cellValue = dataFormatter.formatCellValue(cell);
+                if (isNumeric(cellValue)) {
+                    cellValue = cellValue.replace(',', '.');
+                }
                 saveRowData.put(columnMapping.techName(), cellValue);
             }
             saveFormJsons.add(mapper.writeValueAsString(saveRowData));
         }
 
         return Optional.of(saveFormJsons);
+    }
+
+    public boolean isNumeric(String str) {
+        if (str == null) return false;
+        return str.matches("-?\\d+(,\\d+)?");
     }
 }
