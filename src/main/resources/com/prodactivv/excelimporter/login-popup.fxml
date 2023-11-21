@@ -37,6 +37,10 @@
                                     algorithm="sha512"/>
                         <ServerInfo fx:factory="instance" visible="https://e-commerce.mann-hummel-ft.pl"
                                     algorithm="sha512"/>
+                        <ServerInfo fx:factory="instance" visible="https://admin.tankwagon.pl/"
+                                    algorithm="sha256"/>
+                        <ServerInfo fx:factory="instance" visible="https://portal.intranet.port"
+                                    algorithm="sha256"/>
                     </FXCollections>
                 </items>
             </ChoiceBox>
