@@ -14,15 +14,16 @@ public class SaveFormEndpointHelper {
     }
 
     public static Long getId(JSONObject savedFormData) {
-        return savedFormData.getJSONObject("ids")
-                .getJSONArray(getModelName(savedFormData))
-                .getLong(0);
+        return savedFormData
+                .getJSONArray("recordInfo")
+                .getJSONObject(0)
+                .getLong("id");
     }
 
     public static String getModelName(JSONObject savedFormData) {
-        return (String) savedFormData
-                .getJSONObject("ids")
-                .names()
-                .get(0);
+        return savedFormData
+                .getJSONArray("recordInfo")
+                .getJSONObject(0)
+                .getString("model");
     }
 }
