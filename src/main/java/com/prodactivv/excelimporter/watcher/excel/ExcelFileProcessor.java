@@ -82,7 +82,7 @@ public class ExcelFileProcessor {
 
             for (ColumnMapping columnMapping : configuration.mapping()) {
                 Cell cell = CellUtil.getCell(row, CellReference.convertColStringToIndex(columnMapping.column()));
-                String cellValue = dataFormatter.formatCellValue(cell);
+                String cellValue = dataFormatter.formatCellValue(cell).replace("\n", "");
                 if (isNumeric(cellValue)) {
                     cellValue = cellValue.replace(',', '.');
                 }
